@@ -3,6 +3,11 @@ use std::{
     io::{BufReader, Read, Seek},
 };
 
+/// File reader for .art files, which are used by the Build engine.
+/// The format is used to store sprites and textures of a game.
+/// Both sprites and textures are stored as tiles.
+///
+/// See https://moddingwiki.shikadi.net/wiki/ART_Format_(Build)
 pub struct ArtFileReader<'a> {
     reader: BufReader<&'a File>,
 }
