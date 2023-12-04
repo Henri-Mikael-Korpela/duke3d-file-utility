@@ -1,0 +1,10 @@
+[package]
+name = "duke3d-file-util"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+grp = { path = "./grp" }
+
+[workspace]
+members = ["grp"]
