@@ -3,9 +3,14 @@
 version = 3
 
 [[package]]
+name = "art"
+version = "0.1.0"
+
+[[package]]
 name = "duke3d-file-util"
 version = "0.1.0"
 dependencies = [
+ "art",
  "grp",
 ]
 
