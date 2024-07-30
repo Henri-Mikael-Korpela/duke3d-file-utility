@@ -3,7 +3,10 @@ use std::{
     io::{BufReader, Read, Seek},
 };
 
-/// File reader for .grp files, which are used by the Build engine.
+/// File reader for the GRP file format (.grp). GRP files are used by the Build engine.
+/// 
+/// The GRP format stores file sizes in the headers
+/// and the file offsets are calculated based on the those file sizes.
 ///
 /// See https://moddingwiki.shikadi.net/wiki/GRP_Format
 pub struct GrpFileReader<'a> {
@@ -11,6 +14,7 @@ pub struct GrpFileReader<'a> {
     reader: BufReader<&'a File>,
 }
 impl<'a> GrpFileReader<'a> {
+    /// Represents a signature for a GRP file.
     const FORMAT_DESIGNER_NAME: &[u8; 12] = b"KenSilverman";
     const FILE_COUNT_BYTES: usize = 4;
 
@@ -18,16 +22,16 @@ impl<'a> GrpFileReader<'a> {
         let mut reader = BufReader::new(file);
 
         // Ensure that the file is at least 12 bytes long
-        // (the length of the magic constant) and that the
-        // magic constant matches the one used by the Build engine.
+        // (the length of the signature) and that the
+        // signature matches the one used by the Build engine.
         let mut format_designer_name_buf = [0u8; 12];
         reader
             .read_exact(&mut format_designer_name_buf)
-            .map_err(|_| "Failed to read magic constant from .grp file.")?;
+            .map_err(|_| "Failed to read a signature from .grp file.")?;
 
         if format_designer_name_buf != *Self::FORMAT_DESIGNER_NAME {
             return Err(format!(
-                "Magic constant \"{}\" does not match the magic \"{}\" read from the .grp file.",
+                "Signature \"{}\" does not match the expected signature \"{}\" read from the .grp file.",
                 String::from_utf8_lossy(&format_designer_name_buf),
                 String::from_utf8_lossy(Self::FORMAT_DESIGNER_NAME)
             ));
@@ -38,7 +42,10 @@ impl<'a> GrpFileReader<'a> {
         let file_count = {
             let mut file_count_buf = [0u8; Self::FILE_COUNT_BYTES];
             reader.read_exact(&mut file_count_buf).map_err(|_| {
-                "Failed to read file count from .grp file. There are not enough bytes in the file for reading."
+                concat!(
+                    "Failed to read file count from .grp file. ",
+                    "There are not enough bytes in the file for reading."
+                )
             })?;
             u32::from_le_bytes(file_count_buf)
         };
