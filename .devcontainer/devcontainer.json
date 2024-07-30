@@ -1,0 +1,21 @@
+{
+    "name": "Duke 3D File Utility Dev Container",
+    "build": {
+        "dockerfile": "dev.Dockerfile"
+    },
+    "mounts": [
+        "source=${localWorkspaceFolder},target=/main,type=bind"
+    ],
+    "workspaceFolder": "/main",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "GitHub.copilot",
+                "ms-azuretools.vscode-docker",
+                "rust-lang.rust-analyzer",
+                "tamasfe.even-better-toml",
+                "vadimcn.vscode-lldb"
+            ]
+        }
+    }
+}
